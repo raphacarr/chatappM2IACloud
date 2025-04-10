@@ -7,9 +7,17 @@ window.onload = function() {
   var socketStatus = document.getElementById('status');
   var closeBtn = document.getElementById('close');
 
+  // Demander le pseudo à l'utilisateur
+  var username = prompt('Entrez votre pseudo:', 'Utilisateur' + Math.floor(Math.random() * 1000));
+  if (!username) {
+    username = 'Anonyme' + Math.floor(Math.random() * 1000);
+  }
+  
+  // Afficher le pseudo dans l'interface
+  document.getElementById('username-display').textContent = username;
 
-  // Create a new WebSocket.
-  var socket = new WebSocket('http://localhost:7890/ws/raphacarr');
+  // Create a new WebSocket with username in the URL
+  var socket = new WebSocket('ws://' + window.location.hostname + '/ws/' + username);;
 
 
   // Handle any errors that occur.

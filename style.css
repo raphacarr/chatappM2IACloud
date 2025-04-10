@@ -103,6 +103,19 @@ ul li span {
   font-style: italic;
 }
 
+.user-info {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  border-left: 3px solid #69c773;
+}
+
+.user-info strong {
+  color: #3a7e41;
+  font-weight: bold;
+}
+
 #message-form {
   margin-top: 1.5rem;
 }
