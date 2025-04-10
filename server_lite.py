@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import ssl, json
 import uvicorn, asyncio
 from sentiments import get_sentiment
+import datetime
 
 app = FastAPI()
 
@@ -92,25 +93,30 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 # Analyser le sentiment du message
                 sentiment = get_sentiment(data)
                 
+                # Obtenir l'horodatage actuel
+                timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+                
                 # Ajouter le sentiment au message personnel
                 await manager.send_personal_message(f"You wrote: {data} (Sentiment: {sentiment})", websocket)
                 
-                # Créer un objet JSON avec le message et son sentiment
+                # Créer un objet JSON avec le message, son sentiment, le pseudo et l'horodatage
                 message_with_sentiment = json.dumps({
                     "text": data,
-                    "sentiment": sentiment
+                    "sentiment": sentiment,
+                    "username": client_id,
+                    "timestamp": timestamp
                 })
                 
                 # Diffuser le message avec le sentiment
                 await manager.broadcast(client_id, message_with_sentiment)
-                print(f"Received: {data} (Sentiment: {sentiment})")
+                print(f"Received from {client_id}: {data} (Sentiment: {sentiment})")
             except asyncio.TimeoutError:
                 print("Timeout. Checking connection status.")
 
 
     except WebSocketDisconnect:
        manager.disconnect(websocket, client_id)
-       await manager.broadcast(client_id, "left the chat")
+       await manager.broadcast(client_id, json.dumps({"text": "left the chat", "username": client_id, "timestamp": datetime.datetime.now().strftime("%H:%M:%S")}))
     finally:
         await websocket.close()
         print("Cleaned up connection")

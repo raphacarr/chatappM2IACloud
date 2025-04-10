@@ -94,6 +94,17 @@ ul li span {
   border-left: 3px solid #ffc266;
 }
 
+.timestamp {
+  color: #888;
+  font-size: 0.8em;
+  margin-right: 5px;
+}
+
+.username {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
 /* Style pour l'étiquette de sentiment */
 .received small {
   display: inline-block;

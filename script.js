@@ -17,7 +17,7 @@ window.onload = function() {
   document.getElementById('username-display').textContent = username;
 
   // Create a new WebSocket with username in the URL
-  var socket = new WebSocket('ws://' + window.location.hostname + '/ws/' + username);;
+  var socket = new WebSocket('ws://51.44.59.58:7890/ws/' + username);
 
 
   // Handle any errors that occur.
@@ -46,11 +46,15 @@ window.onload = function() {
         // Format du message diffusé par le serveur
         var text = parsedMessage.message.text;
         var sentiment = parsedMessage.message.sentiment;
+        var username = parsedMessage.message.username || "Anonyme";
+        var timestamp = parsedMessage.message.timestamp || new Date().toLocaleTimeString();
         
         // Ajouter une classe CSS basée sur le sentiment
         var sentimentClass = sentiment.toLowerCase();
-        messagesList.innerHTML += '<li class="received ' + sentimentClass + '"><span>Received:</span>' + 
-                                 text + ' <small>[Sentiment: ' + sentiment + ']</small></li>';
+        messagesList.innerHTML += '<li class="received ' + sentimentClass + '">' +
+                              '<span class="timestamp">[' + timestamp + ']</span> ' +
+                              '<span class="username">' + username + ':</span> ' +
+                              text + ' <small>[Sentiment: ' + sentiment + ']</small></li>';
       } else if (parsedMessage.text && parsedMessage.sentiment) {
         // Format du message direct (non diffusé)
         var text = parsedMessage.text;
@@ -58,12 +62,14 @@ window.onload = function() {
         
         // Ajouter une classe CSS basée sur le sentiment
         var sentimentClass = sentiment.toLowerCase();
-        messagesList.innerHTML += '<li class="received ' + sentimentClass + '"><span>Received:</span>' + 
-                                 text + ' <small>[Sentiment: ' + sentiment + ']</small></li>';
+        messagesList.innerHTML += '<li class="received ' + sentimentClass + '">' +
+                              '<span class="timestamp">[' + new Date().toLocaleTimeString() + ']</span> ' +
+                              '<span class="username">Vous:</span> ' +
+                              text + ' <small>[Sentiment: ' + sentiment + ']</small></li>';
       } else {
-        // Message au format texte simple
-        messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
-      }
+  // Message au format texte simple
+  messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
+}
     } catch (e) {
       // Si le parsing échoue, afficher le message tel quel
       messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
